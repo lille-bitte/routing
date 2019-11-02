@@ -81,7 +81,10 @@ class RouteParser
 
 	public function getSerializedSegments()
 	{
-		return join('/', $this->getSegments());
+		return sprintf(
+			"/%s",
+			join('/', $this->getSegments())
+		);
 	}
 
 	public function getParameters()
