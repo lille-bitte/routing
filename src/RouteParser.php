@@ -63,6 +63,17 @@ class RouteParser
 		}
 	}
 
+	public function reset()
+	{
+		foreach ($this->segments as $key => $value) {
+			unset($this->segments[$key]);
+		}
+
+		foreach ($this->parameters as $key => $value) {
+			unset($this->parameters[$key]);
+		}
+	}
+
 	public function getSegments()
 	{
 		return $this->segments;

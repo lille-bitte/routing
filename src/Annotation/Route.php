@@ -29,21 +29,43 @@ class Route
 		);
 	}
 
+	/**
+	 * Set URI route.
+	 *
+	 * @param string $route URI route.
+	 * @return void
+	 */
 	public function setRoute($route)
 	{
 		$this->route = $route;
 	}
 
+	/**
+	 * Get URI route.
+	 *
+	 * @return string
+	 */
 	public function getRoute()
 	{
 		return $this->route;
 	}
 
-	public function setMethod($method)
+	/**
+	 * Set HTTP method.
+	 *
+	 * @param string $method HTTP method.
+	 * @return void
+	 */
+	public function setMethod(string $method)
 	{
 		$this->method = $method;
 	}
 
+	/**
+	 * Get HTTP method.
+	 *
+	 * @return string
+	 */
 	public function getMethod()
 	{
 		return $this->method;
