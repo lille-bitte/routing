@@ -7,6 +7,7 @@ namespace LilleBitte\Routing;
 use LilleBitte\Routing\Exception\MatcherException;
 
 use function preg_split;
+use function join;
 
 /**
  * @author Paulus Gandung Prakosa <rvn.plvhx@gmail.com>
@@ -65,6 +66,11 @@ class RouteParser
 	public function getSegments()
 	{
 		return $this->segments;
+	}
+
+	public function getSerializedSegments()
+	{
+		return join('/', $this->getSegments());
 	}
 
 	public function getParameters()
