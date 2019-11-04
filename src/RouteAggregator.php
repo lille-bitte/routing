@@ -25,19 +25,23 @@ class RouteAggregator
 	/**
 	 * Add URI route with method and handler.
 	 *
-	 * @param string $method Route method.
+	 * @param array $method Route method.
 	 * @param string $route Route path.
 	 * @param mixed $handler Route handler.
 	 * @return void
 	 */
-	public function addRoute(string $method, string $route, $handler)
-	{
+	public function addRoute(
+		array $methods,
+		string $route,
+		$handler,
+		array $pattern = []
+	) {
 		$this->parser->reset();
-		$this->parser->parse($route);
+		$this->parser->parse($route, $pattern);
 
 		$this->routes[] = [
-			'method' => $method,
-			'route' => $this->parser->getSerializedSegments(),
+			'method' => $methods,
+			'route' => $this->parser->getSegments(),
 			'placeholder' => $this->parser->getParameters(),
 			'handler' => $handler
 		];
@@ -50,9 +54,9 @@ class RouteAggregator
 	 * @param mixed $handler Route handler.
 	 * @return void
 	 */
-	public function get(string $route, $handler)
+	public function get(string $route, $handler, array $pattern = [])
 	{
-		$this->addRoute('GET', $route, $handler);
+		$this->addRoute(['GET'], $route, $handler, $pattern);
 	}
 
 	/**
@@ -62,9 +66,9 @@ class RouteAggregator
 	 * @param mixed $handler Route handler.
 	 * @return void
 	 */
-	public function post(string $route, $handler)
+	public function post(string $route, $handler, array $pattern = [])
 	{
-		$this->addRoute('POST', $route, $handler);
+		$this->addRoute(['POST'], $route, $handler, $pattern);
 	}
 
 	/**
@@ -74,9 +78,9 @@ class RouteAggregator
 	 * @param mixed $handler Route handler.
 	 * @return void
 	 */
-	public function put(string $route, $handler)
+	public function put(string $route, $handler, array $pattern = [])
 	{
-		$this->addRoute('PUT', $route, $handler);
+		$this->addRoute(['PUT'], $route, $handler, $pattern);
 	}
 
 	/**
@@ -86,9 +90,9 @@ class RouteAggregator
 	 * @param mixed $handler Route handler.
 	 * @return void
 	 */
-	public function patch(string $route, $handler)
+	public function patch(string $route, $handler, array $pattern = [])
 	{
-		$this->addRoute('PATCH', $route, $handler);
+		$this->addRoute(['PATCH'], $route, $handler, $pattern);
 	}
 
 	/**
@@ -98,9 +102,9 @@ class RouteAggregator
 	 * @param mixed $handler Route handler.
 	 * @return void
 	 */
-	public function delete(string $route, $handler)
+	public function delete(string $route, $handler, array $pattern = [])
 	{
-		$this->addRoute('DELETE', $route, $handler);
+		$this->addRoute(['DELETE'], $route, $handler, $pattern);
 	}
 
 	/**
@@ -111,5 +115,10 @@ class RouteAggregator
 	public function getRoutes()
 	{
 		return $this->routes;
+	}
+
+	public function setRoutes(array $routes)
+	{
+		$this->routes = $routes;
 	}
 }

@@ -6,6 +6,7 @@ namespace LilleBitte\Routing;
 
 use LilleBitte\Routing\Exception\MatcherException;
 
+use function in_array;
 use function preg_split;
 use function join;
 
@@ -27,9 +28,14 @@ class RouteParser
 	/**
 	 * @var string
 	 */
-	private const REGEX_SPLITTER = '/([a-z\-\_][a-z\-\_]*)|([^\{\}\s\/]+)|\s*|(.)/ix';
+	private const REGEX_SPLITTER = '/([a-z0-9\-\_][a-z0-9\-\_]*)|([^\{\}\s\/]+)|\s*|(.)/ix';
 
-	public function parse(string $route)
+	/**
+	 * @var string
+	 */
+	private const DEFAULT_PLACEHOLDER_REGEX = '[^/]+';
+
+	public function parse(string $route, array $pattern = [])
 	{
 		$res = preg_split(
 			self::REGEX_SPLITTER,
@@ -38,7 +44,7 @@ class RouteParser
 			PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE
 		);
 
-		$pos = 0;
+		$pos = $index = 0;
 
 		while (isset($res[$pos])) {
 			if ($res[$pos] === '/' || $res[$pos] === '}') {
@@ -53,25 +59,32 @@ class RouteParser
 					);
 				}
 
-				$this->parameters[] = $res[$pos + 1];
+				$val = $res[$pos + 1];
+
+				$this->parameters[] = [
+					'index' => $index++,
+					'value' => $val,
+					'pattern' => isset($pattern[$val])
+						? $pattern[$val]
+						: self::DEFAULT_PLACEHOLDER_REGEX
+				];
+
 				$pos += 2;
 				continue;
 			}
 
-			$this->segments[] = $res[$pos];
+			$this->segments[] = [
+				'index' => $index++,
+				'value' => $res[$pos]
+			];
+
 			$pos++;
 		}
 	}
 
 	public function reset()
 	{
-		foreach ($this->segments as $key => $value) {
-			unset($this->segments[$key]);
-		}
-
-		foreach ($this->parameters as $key => $value) {
-			unset($this->parameters[$key]);
-		}
+		$this->segments = $this->parameters = [];
 	}
 
 	public function getSegments()

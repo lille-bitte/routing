@@ -12,5 +12,9 @@
         "psr-4": {
             "LilleBitte\\Routing\\": "tests/"
         }
+    },
+    "require-dev": {
+        "psr/http-message": "^1.0",
+        "lille-bitte/emitter": "dev-master"
     }
 }
