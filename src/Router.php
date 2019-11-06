@@ -32,6 +32,11 @@ class Router
 	 */
 	private $config;
 
+	/**
+	 * @var array
+	 */
+	private $callbacks = [];
+
 	public function __construct(
 		Dispatcher $dispatcher,
 		RouteAggregator $routeAggregator
@@ -134,19 +139,5 @@ class Router
 	public function hasConfig(string $name)
 	{
 		return isset($this->config[$name]);
-	}
-
-	private function assertWantCache()
-	{
-		$wantCache = $this->getConfig('useCache');
-		$cacheFile = $this->getConfig('cacheFile');
-
-		if (((null === $wantCache || false === $wantCache) && null !== $cacheFile) ||
-	        (null === $cacheFile && (null !== $wantCache && $wantCache))) {
-			throw new RouterException(
-				"'cacheFile' has been set. But, 'useCache' is false. Or 'useCache' is true but " .
-				"'cacheFile' has not set. Check your config."
-			);
-		}
 	}
 }
