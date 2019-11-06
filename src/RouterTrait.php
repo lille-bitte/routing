@@ -17,7 +17,7 @@ use function array_values;
  */
 trait RouterTrait
 {
-	private function resolveCallback($callback, array $parameters): ResponseInterface
+	private function resolveCallback(callable $callback, array $parameters): ResponseInterface
 	{
 		$refCallback = new ReflectionFunction($callback);
 		$res = $refCallback->getParameters();
@@ -52,5 +52,12 @@ trait RouterTrait
 		}
 
 		return call_user_func_array($callback, array_values($parameters));
+	}
+
+	private function resolveMethod(
+		$class,
+		string $method,
+		array $parameters
+	): ResponseInterface {
 	}
 }

@@ -37,40 +37,25 @@ class Dispatcher
 	{
 		$routes = $this->routeAggregator->getRoutes();
 		$handlerParams = [];
+		$position = 0;
 
-		foreach ($routes as $key => $value) {
-			$matched = $this->assertAndResolvePlaceholder(
-				$value,
-				$route,
-				$handlerParams
-			);
-
-			if ($matched) {
-				$ret = [
-					'status' => self::FOUND,
-					'route' => $route,
-					'methods' => $value['method'],
-					'parameters' => $handlerParams,
-					'handler' => $value['handler']
-				];
-
-				break;
-			}
+		if (false === $this->match($routes, $route, $method, $position, $handlerParams)) {
+			return ['status' => self::NOT_FOUND];
 		}
 
-		if (!isset($ret)) {
-			return [
-				'status' => self::NOT_FOUND
-			];
-		}
-
-		if (!in_array($method, $ret['methods'], true)) {
+		if (!in_array($method, $routes[$position]['method'], true)) {
 			return [
 				'status' => self::METHOD_NOT_ALLOWED,
-				'allowed-methods' => $ret['methods']
+				'allowed-methods' => $routes[$position]['method']
 			];
 		}
 
-		return $ret;
+		return [
+			'status' => self::FOUND,
+			'route' => $route,
+			'methods' => $routes[$position]['method'],
+			'handler' => $routes[$position]['handler'],
+			'parameters' => $handlerParams
+		];
 	}
 }

@@ -20,48 +20,100 @@ trait DispatcherTrait
 	 * Grouping parted regex into big one.
 	 * https://nikic.github.io/2014/02/18/Fast-request-routing-using-regular-expressions.html
 	 *
-	 * @param array $metadata Route metadata.
-	 * @param string $route Route URI.
-	 * @param array $param Marshalled handler parameters.
-	 * @return boolean
+	 * @param array $routes List of all route metadata.
+	 * @return string
 	 */
-	private function assertAndResolvePlaceholder(array $metadata, string $route, array &$param)
+	private function getRegex(array $routes)
 	{
-		if (!empty($param)) {
-			$param = [];
+		$regex = '~^(?|';
+		$groups = [];
+
+		foreach ($routes as $metadata) {
+			if (empty($metadata['route']) && empty($metadata['placeholder'])) {
+				$groups[] = '/';
+				continue;
+			}
+
+			$tmp = '';
+			$index = 0;
+			$total = count($metadata['route']) + count($metadata['placeholder']);
+
+			for ($i = 0, $j = 0; $index < $total; ) {
+				if (isset($metadata['route'][$i]) &&
+					$metadata['route'][$i]['index'] === $index) {
+					$tmp .= '/' . $metadata['route'][$i]['value'];
+					$i++;
+				}
+
+				if (isset($metadata['placeholder'][$j]) &&
+					$metadata['placeholder'][$j]['index'] === $index) {
+					$tmp .= '/(' . $metadata['placeholder'][$j]['pattern'] . ')';
+					$j++;
+				}
+
+				$index++;
+			}
+
+			$groups[] = $tmp;
 		}
 
-		$routes = [];
+		$regex .= join('|', array_values($groups)) . ')$~x';
+		return $regex;
+	}
 
-		foreach ($metadata['route'] as $key => $value) {
-			$routes[] = $value['value'];
-		}
-
-		$staticRoutes = empty($routes)
-			? '/'
-			: '/' . join('/', $routes);
-
-		$patterns = [];
-
-		foreach ($metadata['placeholder'] as $key => $value) {
-			$patterns[] = $value['pattern'];
-			$param[$value['value']] = null;
-		}
-
-		$placeholderPattern = empty($patterns)
-			? ''
-			: '/' . sprintf('(%s)', join(')/(', $patterns));
-
-		$generated = '~' . $staticRoutes . $placeholderPattern . '~i';
-
-		preg_match($generated, $route, $res);
-
-		if (count($res) !== count($patterns) + 1) {
+	private function match(
+		array $routes,
+		string $route,
+		string $method,
+		int &$pos,
+		array &$routeParams
+	) {
+		if (!preg_match($this->getRegex($routes), $route, $res)) {
 			return false;
 		}
 
-		$param = array_combine(array_keys($param), array_slice($res, 1));
+		$matchByPosition = function($q, $staticRoute) {
+			$full = explode('/', ltrim($q, '/'));
+			$tmp = 0;
 
-		return true;
+			foreach ($staticRoute as $value) {
+				if (isset($full[$value['index']]) && $value['value'] === $full[$value['index']]) {
+					$tmp++;
+				}
+			}
+
+			return count($full) - $tmp;
+		};
+
+		$collectMetadataValue = function($q, string $directive) {
+			$val = [];
+
+			foreach ($q[$directive] as $key => $value) {
+				$val[] = $value['value'];
+			}
+
+			return $val;
+		};
+
+		foreach ($routes as $key => $value) {
+			$tmp = '/' . join('/', $collectMetadataValue($value, 'route'));
+
+			if ($route === $tmp) {
+				$pos = $key;
+				return true;
+			}
+
+			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route'])) {
+				$pos = $key;
+				$routeParams = array_combine(
+					$collectMetadataValue($value, 'placeholder'),
+					array_slice($res, 1)
+				);
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
