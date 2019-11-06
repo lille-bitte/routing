@@ -2,6 +2,7 @@
 
 namespace LilleBitte\Routing;
 
+use LilleBitte\Routing\Exception\DispatcherResolverException;
 use LilleBitte\Routing\Exception\RouterException;
 use Psr\Http\Message\RequestInterface;
 
@@ -139,5 +140,39 @@ class Router
 	public function hasConfig(string $name)
 	{
 		return isset($this->config[$name]);
+	}
+
+	public function getCallbacks()
+	{
+		return $this->callbacks;
+	}
+
+	public function addCallback(\Closure $callback)
+	{
+		$key = sprintf(
+			"handler%d",
+			!count($this->callback) ? 0 : count($this->callback)
+		);
+
+		$this->callback[$key] = $callback;
+	}
+
+	public function hasCallback(string $id)
+	{
+		return array_key_exists($id, $this->callback);
+	}
+
+	public function getCallback(string $id)
+	{
+		if (!$this->hasCallback($id)) {
+			throw new DispatcherResolverException(
+				sprintf(
+					"Callback with id '%' not exist.",
+					$id
+				)
+			);
+		}
+
+		return $this->callback[$id];
 	}
 }

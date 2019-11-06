@@ -19,6 +19,19 @@ trait RouterTrait
 {
 	private function resolveCallback(callable $callback, array $parameters): ResponseInterface
 	{
+		if (!is_callable($callback) && !$this->hasCallback($callback)) {
+			throw new DispatcherResolverException(
+				sprintf(
+					"Callback with id '%s' not exist.",
+					$callback
+				)
+			);
+		}
+
+		$callback = is_callable($callback)
+			? $callback
+			: $this->getCallback($callback);
+
 		$refCallback = new ReflectionFunction($callback);
 		$res = $refCallback->getParameters();
 
