@@ -54,6 +54,20 @@ trait RouterTrait
 		return call_user_func_array($callback, array_values($parameters));
 	}
 
+	private function assertWantCache()
+	{
+		$wantCache = $this->getConfig('useCache');
+		$cacheFile = $this->getConfig('cacheFile');
+
+		if (((null === $wantCache || false === $wantCache) && null !== $cacheFile) ||
+	        (null === $cacheFile && (null !== $wantCache && $wantCache))) {
+			throw new RouterException(
+				"'cacheFile' has been set. But, 'useCache' is false. Or 'useCache' is true but " .
+				"'cacheFile' has not set. Check your config."
+			);
+		}
+	}
+
 	private function resolveMethod(
 		$class,
 		string $method,
