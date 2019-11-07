@@ -109,12 +109,13 @@ trait DispatcherTrait
 		foreach ($routes as $key => $value) {
 			$tmp = '/' . join('/', $collectMetadataValue($value, 'route'));
 
-			if ($route === $tmp) {
+			if ($route === $tmp && in_array($method, $value['method'], true)) {
 				$pos = $key;
 				return true;
 			}
 
-			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route'])) {
+			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route']) &&
+		        in_array($method, $value['method'], true)) {
 				$pos = $key;
 				$routeParams = array_combine(
 					$collectMetadataValue($value, 'placeholder'),
