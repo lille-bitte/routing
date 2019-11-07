@@ -28,7 +28,7 @@ class RouteParser
 	/**
 	 * @var string
 	 */
-	private const REGEX_SPLITTER = '/([a-z0-9\-\_][a-z0-9\-\_]*)|([^\{\}\s\/]+)|\s*|(.)/ix';
+	private const REGEX_SPLITTER = '/([a-z0-9\-\_][a-z0-9\-\_]*)|([^\{\}\s\/]+)|\s*|(.)/x';
 
 	/**
 	 * @var string
