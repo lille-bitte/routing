@@ -78,6 +78,8 @@ trait RouterTrait
 	/**
 	 * Check if cache-related configuration
 	 * are properly set.
+	 *
+	 * @return void
 	 */
 	private function assertWantCache()
 	{
