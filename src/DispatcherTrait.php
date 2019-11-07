@@ -68,7 +68,7 @@ trait DispatcherTrait
 	 * @param array $routes Routes metadata.
 	 * @param string $route Route path.
 	 * @param string $method Route method.
-	 * @param int $pos Current position in metadata aggregator.
+	 * @param array $pos List of position in metadata aggregator.
 	 * @param array $routeParams Collected route parameters.
 	 * @return boolean
 	 */
@@ -76,9 +76,13 @@ trait DispatcherTrait
 		array $routes,
 		string $route,
 		string $method,
-		int &$pos,
-		array &$routeParams
+		array &$pos,
+		array &$routeParams,
+		array &$allowedMethods
 	) {
+		// reset list reference
+		$pos = $routeParams = $allowedMethods = [];
+
 		if (!preg_match($this->getRegex($routes), $route, $res)) {
 			return false;
 		}
@@ -109,23 +113,22 @@ trait DispatcherTrait
 		foreach ($routes as $key => $value) {
 			$tmp = '/' . join('/', $collectMetadataValue($value, 'route'));
 
-			if ($route === $tmp && in_array($method, $value['method'], true)) {
-				$pos = $key;
-				return true;
+			if ($route === $tmp) {
+				$pos[] = $key;
+				$allowedMethods = array_merge($allowedMethods, $value['method']);
+				$routeParams[] = [];
 			}
 
-			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route']) &&
-		        in_array($method, $value['method'], true)) {
-				$pos = $key;
-				$routeParams = array_combine(
+			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route'])) {
+				$pos[] = $key;
+				$allowedMethods = array_merge($allowedMethods, $value['method']);
+				$routeParams[] = array_combine(
 					$collectMetadataValue($value, 'placeholder'),
 					array_slice($res, 1)
 				);
-
-				return true;
 			}
 		}
 
-		return false;
+		return true;
 	}
 }

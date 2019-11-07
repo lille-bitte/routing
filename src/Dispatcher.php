@@ -54,26 +54,38 @@ class Dispatcher
 	public function dispatch(string $method, string $route)
 	{
 		$routes = $this->routeAggregator->getRoutes();
+		$allowedMethods = [];
 		$handlerParams = [];
-		$position = 0;
+		$position = [];
 
-		if (false === $this->match($routes, $route, $method, $position, $handlerParams)) {
+		$res = $this->match(
+			$routes,
+			$route,
+			$method,
+			$position,
+			$handlerParams,
+			$allowedMethods
+		);
+
+		if (false === $res) {
 			return ['status' => self::NOT_FOUND];
 		}
 
-		if (!in_array($method, $routes[$position]['method'], true)) {
+		$current = array_search($method, $allowedMethods, true);
+
+		if (false === $current) {
 			return [
 				'status' => self::METHOD_NOT_ALLOWED,
-				'allowed-methods' => $routes[$position]['method']
+				'allowed-methods' => $allowedMethods
 			];
 		}
 
 		return [
 			'status' => self::FOUND,
 			'route' => $route,
-			'methods' => $routes[$position]['method'],
-			'handler' => $routes[$position]['handler'],
-			'parameters' => $handlerParams
+			'methods' => $routes[$position[$current]]['method'],
+			'handler' => $routes[$position[$current]]['handler'],
+			'parameters' => $handlerParams[$current]
 		];
 	}
 }
