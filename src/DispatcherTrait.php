@@ -47,7 +47,7 @@ trait DispatcherTrait
 
 				if (isset($metadata['placeholder'][$j]) &&
 					$metadata['placeholder'][$j]['index'] === $index) {
-					$tmp .= '/(' . $metadata['placeholder'][$j]['pattern'] . ')';
+					$tmp .= '/(' . $metadata['placeholder'][$j]['default'] . ')';
 					$j++;
 				}
 
@@ -70,6 +70,7 @@ trait DispatcherTrait
 	 * @param string $method Route method.
 	 * @param array $pos List of position in metadata aggregator.
 	 * @param array $routeParams Collected route parameters.
+	 * @param array $allowedMethods Collected HTTP methods which allowed.
 	 * @return boolean
 	 */
 	private function match(
@@ -97,7 +98,7 @@ trait DispatcherTrait
 				}
 			}
 
-			return count($full) - $tmp;
+			return !$tmp ? null : (count($full) - $tmp);
 		};
 
 		$collectMetadataValue = function($q, string $directive) {
@@ -119,13 +120,42 @@ trait DispatcherTrait
 				$routeParams[] = [];
 			}
 
-			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route'])) {
+			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route']) &&
+		        $this->validateRouteParameters($res, $value['placeholder'])) {
 				$pos[] = $key;
 				$allowedMethods = array_merge($allowedMethods, $value['method']);
 				$routeParams[] = array_combine(
 					$collectMetadataValue($value, 'placeholder'),
 					array_slice($res, 1)
 				);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validate matched route parameters.
+	 *
+	 * @param array $values Route parameter values.
+	 * @param array $metadata Route parameter metadata.
+	 * @return boolean
+	 */
+	private function validateRouteParameters(array $values, array $metadata)
+	{
+		$values = array_values(array_slice($values, 1));
+
+		foreach ($metadata as $key => $val) {
+			if (!isset($values[$key])) {
+				return false;
+			}
+
+			$pattern = isset($val['pattern'])
+				? $val['pattern']
+				: $val['default'];
+
+			if (!preg_match('~^' . $pattern . '$~x', $values[$key])) {
+				return false;
 			}
 		}
 

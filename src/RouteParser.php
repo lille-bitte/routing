@@ -69,13 +69,17 @@ class RouteParser
 
 				$val = $res[$pos + 1];
 
-				$this->parameters[] = [
+				$tmp = [
 					'index' => $index++,
 					'value' => $val,
-					'pattern' => isset($pattern[$val])
-						? $pattern[$val]
-						: self::DEFAULT_PLACEHOLDER_REGEX
+					'default' => self::DEFAULT_PLACEHOLDER_REGEX
 				];
+
+				if (isset($pattern[$val])) {
+					$tmp['pattern'] = $pattern[$val];
+				}
+
+				$this->parameters[] = $tmp;
 
 				$pos += 2;
 				continue;

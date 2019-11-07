@@ -55,12 +55,13 @@ class Router
 	 * @param mixed $handler Handler if route has matched.
 	 * @return void
 	 */
-	public function any(array $methods, string $route, $handler)
+	public function any(array $methods, string $route, $handler, array $pattern = [])
 	{
 		$this->routeAggregator->addRoute(
 			$methods,
 			$route,
-			$this->getHandlerId($handler)
+			$this->getHandlerId($handler),
+			$pattern
 		);
 	}
 
@@ -71,11 +72,12 @@ class Router
 	 * @param mixed $handler Handler if route has matched.
 	 * @return void
 	 */
-	public function get(string $route, $handler)
+	public function get(string $route, $handler, array $pattern = [])
 	{
 		$this->routeAggregator->get(
 			$route,
-			$this->getHandlerId($handler)
+			$this->getHandlerId($handler),
+			$pattern
 		);
 	}
 
@@ -86,11 +88,12 @@ class Router
 	 * @param mixed $handler Handler if route has matched.
 	 * @return void
 	 */
-	public function post(string $route, $handler)
+	public function post(string $route, $handler, array $pattern = [])
 	{
 		$this->routeAggregator->post(
 			$route,
-			$this->getHandlerId($handler)
+			$this->getHandlerId($handler),
+			$pattern
 		);
 	}
 
@@ -101,11 +104,12 @@ class Router
 	 * @param mixed $handler Handler if route has matched.
 	 * @return void
 	 */
-	public function put(string $route, $handler)
+	public function put(string $route, $handler, array $pattern = [])
 	{
 		$this->routeAggregator->put(
 			$route,
-			$this->getHandlerId($handler)
+			$this->getHandlerId($handler),
+			$pattern
 		);
 	}
 
@@ -116,11 +120,12 @@ class Router
 	 * @param mixed $handler Handler if route has matched.
 	 * @return void
 	 */
-	public function patch(string $route, $handler)
+	public function patch(string $route, $handler, array $pattern = [])
 	{
 		$this->routeAggregator->patch(
 			$route,
-			$this->getHandlerId($handler)
+			$this->getHandlerId($handler),
+			$pattern
 		);
 	}
 
@@ -131,11 +136,12 @@ class Router
 	 * @param mixed $handler Handler if route has matched.
 	 * @return void
 	 */
-	public function delete(string $route, $handler)
+	public function delete(string $route, $handler, array $pattern = [])
 	{
 		$this->routeAggregator->delete(
 			$route,
-			$this->getHandlerId($handler)
+			$this->getHandlerId($handler),
+			$pattern
 		);
 	}
 
