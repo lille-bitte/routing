@@ -42,38 +42,115 @@ class Router
 		Dispatcher $dispatcher,
 		RouteAggregator $routeAggregator
 	) {
-		$this->assertWantCache();
 		$this->dispatcher = $dispatcher;
 		$this->routeAggregator = $routeAggregator;
 	}
 
+	/**
+	 * Register given route with more than one
+	 * HTTP method.
+	 *
+	 * @param array $methods List of HTTP method.
+	 * @param string $route Route path.
+	 * @param mixed $handler Handler if route has matched.
+	 * @return void
+	 */
 	public function any(array $methods, string $route, $handler)
 	{
-		$this->routeAggregator->addRoute($methods, $route, $handler);
+		$this->routeAggregator->addRoute(
+			$methods,
+			$route,
+			$this->getHandlerId($handler)
+		);
 	}
 
+	/**
+	 * Register given route with GET HTTP method.
+	 *
+	 * @param string $route Route path.
+	 * @param mixed $handler Handler if route has matched.
+	 * @return void
+	 */
 	public function get(string $route, $handler)
 	{
-		$this->routeAggregator->get($route, $handler);
+		$this->routeAggregator->get(
+			$route,
+			$this->getHandlerId($handler)
+		);
 	}
 
+	/**
+	 * Register given route with POST HTTP method.
+	 *
+	 * @param string $route Route path.
+	 * @param mixed $handler Handler if route has matched.
+	 * @return void
+	 */
 	public function post(string $route, $handler)
 	{
-		$this->routeAggregator->post($route, $handler);
+		$this->routeAggregator->post(
+			$route,
+			$this->getHandlerId($handler)
+		);
 	}
 
+	/**
+	 * Register given route with PUT HTTP method.
+	 *
+	 * @param string $route Route path.
+	 * @param mixed $handler Handler if route has matched.
+	 * @return void
+	 */
 	public function put(string $route, $handler)
 	{
-		$this->routeAggregator->put($route, $handler);
+		$this->routeAggregator->put(
+			$route,
+			$this->getHandlerId($handler)
+		);
 	}
 
+	/**
+	 * Register given route with PATCH HTTP method.
+	 *
+	 * @param string $route Route path.
+	 * @param mixed $handler Handler if route has matched.
+	 * @return void
+	 */
+	public function patch(string $route, $handler)
+	{
+		$this->routeAggregator->patch(
+			$route,
+			$this->getHandlerId($handler)
+		);
+	}
+
+	/**
+	 * Register given route with DELETE HTTP method.
+	 *
+	 * @param string $route Route path.
+	 * @param mixed $handler Handler if route has matched.
+	 * @return void
+	 */
 	public function delete(string $route, $handler)
 	{
-		$this->routeAggregator->delete($route, $handler);
+		$this->routeAggregator->delete(
+			$route,
+			$this->getHandlerId($handler)
+		);
 	}
 
+	/**
+	 * Dispatch matched route path with given
+	 * HTTP method.
+	 *
+	 * @param string $method HTTP method.
+	 * @param string $route Route path.
+	 * @return array
+	 */
 	public function dispatch(string $method, string $route)
 	{
+		$this->assertWantCache();
+
 		$wantCache = $this->getConfig('useCache');
 		$cacheFile = $this->getConfig('cacheFile');
 
@@ -118,16 +195,33 @@ class Router
 		];
 	}
 
+	/**
+	 * Dispatch encapsulated HTTP request.
+	 *
+	 * @param RequestInterface $request Encapsulated HTTP request.
+	 * @return array
+	 */
 	public function dispatchRequest(RequestInterface $request)
 	{
 		return $this->dispatch($request->getMethod(), $request->getUri()->getPath());
 	}
 
+	/**
+	 * Set route configuration.
+	 *
+	 * @param array $config Configuration list.
+	 * @return void
+	 */
 	public function setConfig(array $config)
 	{
 		$this->config = $config;
 	}
 
+	/**
+	 * Get route configuration.
+	 *
+	 * @return array|string|null
+	 */
 	public function getConfig($name = null)
 	{
 		return null === $name
@@ -137,31 +231,62 @@ class Router
 				: null);
 	}
 
+	/**
+	 * Check if configuration array has
+	 * value with given key.
+	 *
+	 * @param string $name Configuration key.
+	 * @return boolean
+	 */
 	public function hasConfig(string $name)
 	{
 		return isset($this->config[$name]);
 	}
 
+	/**
+	 * Get list of registered callbacks.
+	 *
+	 * @return array
+	 */
 	public function getCallbacks()
 	{
 		return $this->callbacks;
 	}
 
+	/**
+	 * Add callback into callbacks list.
+	 *
+	 * @param Closure $callback Callback.
+	 * @return void
+	 */
 	public function addCallback(\Closure $callback)
 	{
 		$key = sprintf(
 			"handler%d",
-			!count($this->callback) ? 0 : count($this->callback)
+			!count($this->callbacks) ? 0 : count($this->callbacks)
 		);
 
-		$this->callback[$key] = $callback;
+		$this->callbacks[$key] = $callback;
 	}
 
+	/**
+	 * Check if callback with given key
+	 * exists.
+	 *
+	 * @param string $id Callback key.
+	 * @return boolean
+	 */
 	public function hasCallback(string $id)
 	{
-		return array_key_exists($id, $this->callback);
+		return array_key_exists($id, $this->callbacks);
 	}
 
+	/**
+	 * Get callback with given key.
+	 *
+	 * @param string $id Callback key.
+	 * @return Closure
+	 */
 	public function getCallback(string $id)
 	{
 		if (!$this->hasCallback($id)) {
@@ -173,6 +298,6 @@ class Router
 			);
 		}
 
-		return $this->callback[$id];
+		return $this->callbacks[$id];
 	}
 }

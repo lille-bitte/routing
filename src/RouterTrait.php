@@ -17,7 +17,15 @@ use function array_values;
  */
 trait RouterTrait
 {
-	private function resolveCallback(callable $callback, array $parameters): ResponseInterface
+	/**
+	 * Resolve given callback with given
+	 * set of parameters.
+	 *
+	 * @param mixed $callback Callback.
+	 * @param array $parameters Callback parameters.
+	 * @return ResponseInterface
+	 */
+	private function resolveCallback($callback, array $parameters): ResponseInterface
 	{
 		if (!is_callable($callback) && !$this->hasCallback($callback)) {
 			throw new DispatcherResolverException(
@@ -67,6 +75,10 @@ trait RouterTrait
 		return call_user_func_array($callback, array_values($parameters));
 	}
 
+	/**
+	 * Check if cache-related configuration
+	 * are properly set.
+	 */
 	private function assertWantCache()
 	{
 		$wantCache = $this->getConfig('useCache');
@@ -79,6 +91,23 @@ trait RouterTrait
 				"'cacheFile' has not set. Check your config."
 			);
 		}
+	}
+
+	/**
+	 * Get handler identifier to pass on
+	 * route registration method.
+	 *
+	 * @param mixed $handler Route handler.
+	 * @return string
+	 */
+	private function getHandlerId($handler)
+	{
+		if ($handler instanceof \Closure) {
+			$this->addCallback($handler);
+			$handler = array_keys($this->callbacks)[count($this->callbacks) - 1];
+		}
+
+		return $handler;
 	}
 
 	private function resolveMethod(

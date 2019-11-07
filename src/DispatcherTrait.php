@@ -61,6 +61,17 @@ trait DispatcherTrait
 		return $regex;
 	}
 
+	/**
+	 * Match given route and assign current position and
+	 * (if any) route parameters.
+	 *
+	 * @param array $routes Routes metadata.
+	 * @param string $route Route path.
+	 * @param string $method Route method.
+	 * @param int $pos Current position in metadata aggregator.
+	 * @param array $routeParams Collected route parameters.
+	 * @return boolean
+	 */
 	private function match(
 		array $routes,
 		string $route,

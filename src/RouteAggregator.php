@@ -117,6 +117,12 @@ class RouteAggregator
 		return $this->routes;
 	}
 
+	/**
+	 * Set routes metadata.
+	 *
+	 * @param array $routes Routes metadata.
+	 * @return void
+	 */
 	public function setRoutes(array $routes)
 	{
 		$this->routes = $routes;

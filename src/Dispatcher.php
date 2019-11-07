@@ -23,16 +23,34 @@ class Dispatcher
 		$this->setAggregator($routeAggregator);
 	}
 
+	/**
+	 * Set route aggregator.
+	 *
+	 * @param RouteAggregator|null $routeAggregator Route aggregator instance.
+	 * @return void
+	 */
 	public function setAggregator(RouteAggregator $routeAggregator = null)
 	{
 		$this->routeAggregator = $routeAggregator;
 	}
 
+	/**
+	 * Get route aggregator.
+	 *
+	 * @return RouteAggregator|null
+	 */
 	public function getAggregator()
 	{
 		return $this->routeAggregator;
 	}
 
+	/**
+	 * Dispatch matched route with supplied method.
+	 *
+	 * @param string $method Route HTTP method.
+	 * @param string $route Route path.
+	 * @return array
+	 */
 	public function dispatch(string $method, string $route)
 	{
 		$routes = $this->routeAggregator->getRoutes();

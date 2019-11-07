@@ -35,6 +35,14 @@ class RouteParser
 	 */
 	private const DEFAULT_PLACEHOLDER_REGEX = '[^/]+';
 
+	/**
+	 * Parse given route to two tuples, static routes and
+	 * route parameters.
+	 *
+	 * @param string $route Route path.
+	 * @param array $pattern Route parameters pattern.
+	 * @return void
+	 */
 	public function parse(string $route, array $pattern = [])
 	{
 		$res = preg_split(
@@ -82,24 +90,32 @@ class RouteParser
 		}
 	}
 
+	/**
+	 * Reset parser state.
+	 *
+	 * @return void
+	 */
 	public function reset()
 	{
 		$this->segments = $this->parameters = [];
 	}
 
+	/**
+	 * Get route static segments
+	 * metadata.
+	 *
+	 * @return array
+	 */
 	public function getSegments()
 	{
 		return $this->segments;
 	}
 
-	public function getSerializedSegments()
-	{
-		return sprintf(
-			"/%s",
-			join('/', $this->getSegments())
-		);
-	}
-
+	/**
+	 * Get route parameters metadata.
+	 *
+	 * @return array
+	 */
 	public function getParameters()
 	{
 		return $this->parameters;
