@@ -2,6 +2,8 @@
 
 namespace LilleBitte\Routing;
 
+use function rtrim;
+
 /**
  * @author Paulus Gandung Prakosa <rvn.plvhx@gmail.com>
  */
@@ -16,6 +18,11 @@ class RouteAggregator
 	 * @var RouteParser
 	 */
 	private $parser;
+
+	/**
+	 * @var string
+	 */
+	private $group = '';
 
 	public function __construct(RouteParser $parser = null)
 	{
@@ -37,7 +44,10 @@ class RouteAggregator
 		array $pattern = []
 	) {
 		$this->parser->reset();
-		$this->parser->parse($route, $pattern);
+		$this->parser->parse(
+			sprintf("%s/%s", $this->getGroup(), $route),
+			$pattern
+		);
 
 		$this->routes[] = [
 			'method' => $methods,
@@ -126,5 +136,15 @@ class RouteAggregator
 	public function setRoutes(array $routes)
 	{
 		$this->routes = $routes;
+	}
+
+	public function setGroup(string $group)
+	{
+		$this->group = rtrim($group, '/');
+	}
+
+	public function getGroup()
+	{
+		return $this->group;
 	}
 }

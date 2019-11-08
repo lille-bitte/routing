@@ -145,6 +145,12 @@ class Router
 		);
 	}
 
+	public function group(string $group, \Closure $callback)
+	{
+		$this->routeAggregator->setGroup($group);
+		$callback();
+	}
+
 	/**
 	 * Dispatch matched route path with given
 	 * HTTP method.
