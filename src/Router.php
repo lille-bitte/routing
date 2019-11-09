@@ -14,7 +14,7 @@ use function var_export;
 /**
  * @author Paulus Gandung Prakosa <rvn.plvhx@gmail.com>
  */
-class Router
+class Router implements RouterInterface
 {
 	use RouterTrait;
 
@@ -47,13 +47,7 @@ class Router
 	}
 
 	/**
-	 * Register given route with more than one
-	 * HTTP method.
-	 *
-	 * @param array $methods List of HTTP method.
-	 * @param string $route Route path.
-	 * @param mixed $handler Handler if route has matched.
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function any(array $methods, string $route, $handler, array $pattern = [])
 	{
@@ -66,11 +60,7 @@ class Router
 	}
 
 	/**
-	 * Register given route with GET HTTP method.
-	 *
-	 * @param string $route Route path.
-	 * @param mixed $handler Handler if route has matched.
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function get(string $route, $handler, array $pattern = [])
 	{
@@ -82,11 +72,7 @@ class Router
 	}
 
 	/**
-	 * Register given route with POST HTTP method.
-	 *
-	 * @param string $route Route path.
-	 * @param mixed $handler Handler if route has matched.
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function post(string $route, $handler, array $pattern = [])
 	{
@@ -98,11 +84,7 @@ class Router
 	}
 
 	/**
-	 * Register given route with PUT HTTP method.
-	 *
-	 * @param string $route Route path.
-	 * @param mixed $handler Handler if route has matched.
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function put(string $route, $handler, array $pattern = [])
 	{
@@ -114,11 +96,7 @@ class Router
 	}
 
 	/**
-	 * Register given route with PATCH HTTP method.
-	 *
-	 * @param string $route Route path.
-	 * @param mixed $handler Handler if route has matched.
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function patch(string $route, $handler, array $pattern = [])
 	{
@@ -130,11 +108,7 @@ class Router
 	}
 
 	/**
-	 * Register given route with DELETE HTTP method.
-	 *
-	 * @param string $route Route path.
-	 * @param mixed $handler Handler if route has matched.
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function delete(string $route, $handler, array $pattern = [])
 	{
@@ -145,19 +119,17 @@ class Router
 		);
 	}
 
-	public function group(string $group, \Closure $callback)
+	/**
+	 * {@inheritdoc}
+	 */
+	public function group(string $group, callable $callback)
 	{
 		$this->routeAggregator->setGroup($group);
-		$callback();
+		$callback($this);
 	}
 
 	/**
-	 * Dispatch matched route path with given
-	 * HTTP method.
-	 *
-	 * @param string $method HTTP method.
-	 * @param string $route Route path.
-	 * @return array
+	 * {@inheritdoc}
 	 */
 	public function dispatch(string $method, string $route)
 	{
