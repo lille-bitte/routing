@@ -64,7 +64,8 @@ class Router implements RouterInterface
 	 */
 	public function get(string $route, $handler, array $pattern = [])
 	{
-		$this->routeAggregator->get(
+		$this->routeAggregator->addRoute(
+			['GET'],
 			$route,
 			$this->getHandlerId($handler),
 			$pattern
@@ -76,7 +77,8 @@ class Router implements RouterInterface
 	 */
 	public function post(string $route, $handler, array $pattern = [])
 	{
-		$this->routeAggregator->post(
+		$this->routeAggregator->addRoute(
+			['POST'],
 			$route,
 			$this->getHandlerId($handler),
 			$pattern
@@ -88,7 +90,8 @@ class Router implements RouterInterface
 	 */
 	public function put(string $route, $handler, array $pattern = [])
 	{
-		$this->routeAggregator->put(
+		$this->routeAggregator->addRoute(
+			['PUT'],
 			$route,
 			$this->getHandlerId($handler),
 			$pattern
@@ -100,7 +103,8 @@ class Router implements RouterInterface
 	 */
 	public function patch(string $route, $handler, array $pattern = [])
 	{
-		$this->routeAggregator->patch(
+		$this->routeAggregator->addRoute(
+			['PATCH'],
 			$route,
 			$this->getHandlerId($handler),
 			$pattern
@@ -112,7 +116,8 @@ class Router implements RouterInterface
 	 */
 	public function delete(string $route, $handler, array $pattern = [])
 	{
-		$this->routeAggregator->delete(
+		$this->routeAggregator->addRoute(
+			['DELETE'],
 			$route,
 			$this->getHandlerId($handler),
 			$pattern
