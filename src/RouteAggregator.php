@@ -78,11 +78,22 @@ class RouteAggregator
 		$this->routes = $routes;
 	}
 
+	/**
+	 * Set route group.
+	 *
+	 * @param string $group Route group.
+	 * @return void
+	 */
 	public function setGroup(string $group)
 	{
 		$this->group = rtrim($group, '/');
 	}
 
+	/**
+	 * Get route group.
+	 *
+	 * @return string
+	 */
 	public function getGroup()
 	{
 		return $this->group;
