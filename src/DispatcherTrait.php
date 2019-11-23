@@ -47,7 +47,11 @@ trait DispatcherTrait
 
 				if (isset($metadata['placeholder'][$j]) &&
 					$metadata['placeholder'][$j]['index'] === $index) {
-					$tmp .= '/(' . $metadata['placeholder'][$j]['default'] . ')';
+					$subRegex = isset($metadata['placeholder'][$j]['pattern'])
+						? $metadata['placeholder'][$j]['pattern']
+						: $metadata['placeholder'][$j]['default'];
+
+					$tmp .= '/(' . $subRegex . ')';
 					$j++;
 				}
 
@@ -88,31 +92,8 @@ trait DispatcherTrait
 			return false;
 		}
 
-		$matchByPosition = function($q, $staticRoute) {
-			$full = explode('/', ltrim($q, '/'));
-			$tmp = 0;
-
-			foreach ($staticRoute as $value) {
-				if (isset($full[$value['index']]) && $value['value'] === $full[$value['index']]) {
-					$tmp++;
-				}
-			}
-
-			return !$tmp ? null : (count($full) - $tmp);
-		};
-
-		$collectMetadataValue = function($q, string $directive) {
-			$val = [];
-
-			foreach ($q[$directive] as $key => $value) {
-				$val[] = $value['value'];
-			}
-
-			return $val;
-		};
-
 		foreach ($routes as $key => $value) {
-			$tmp = '/' . join('/', $collectMetadataValue($value, 'route'));
+			$tmp = '/' . join('/', $this->collectMetadataValue($value, 'route'));
 
 			if ($route === $tmp) {
 				$pos[] = $key;
@@ -120,18 +101,57 @@ trait DispatcherTrait
 				$routeParams[] = [];
 			}
 
-			if (count($value['placeholder']) === $matchByPosition($res[0], $value['route']) &&
+			if (count($value['placeholder']) === $this->matchByPosition($res[0], $value['route']) &&
 		        $this->validateRouteParameters($res, $value['placeholder'])) {
 				$pos[] = $key;
 				$allowedMethods = array_merge($allowedMethods, $value['method']);
 				$routeParams[] = array_combine(
-					$collectMetadataValue($value, 'placeholder'),
+					$this->collectMetadataValue($value, 'placeholder'),
 					array_slice($res, 1)
 				);
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Match given route with given static route segments.
+	 *
+	 * @param string $matchedRoute Full matched route.
+	 * @param array $staticSegments Route static segments.
+	 * @return null|integer
+	 */
+	private function matchByPosition(string $matchedRoute, array $staticSegments)
+	{
+		$full = explode('/', ltrim($matchedRoute, '/'));
+		$tmp = 0;
+
+		foreach ($staticSegments as $value) {
+			if (isset($full[$value['index']]) && $value['value'] === $full[$value['index']]) {
+				$tmp++;
+			}
+		}
+
+		return !$tmp ? null : (count($full) - $tmp);
+	}
+
+	/**
+	 * Collect route metadata value.
+	 *
+	 * @param array $metadata Route metadata.
+	 * @param string $key Route metadata key.
+	 * @return array
+	 */
+	private function collectMetadataValue(array $metadata, string $key)
+	{
+		$val = [];
+
+		foreach ($metadata[$key] as $tkey => $tvalue) {
+			$val[] = $tvalue['value'];
+		}
+
+		return $val;
 	}
 
 	/**
