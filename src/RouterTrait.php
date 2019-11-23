@@ -3,7 +3,9 @@
 namespace LilleBitte\Routing;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Container\ContainerInterface;
 use LilleBitte\Routing\Exception\DispatcherResolverException;
+use ReflectionClass;
 use ReflectionFunction;
 
 use function count;
@@ -25,7 +27,7 @@ trait RouterTrait
 	 * @param array $parameters Callback parameters.
 	 * @return ResponseInterface
 	 */
-	private function resolveCallback($callback, array $parameters): ResponseInterface
+	public function resolveCallback($callback, array $parameters): ResponseInterface
 	{
 		if (!is_callable($callback) && !$this->hasCallback($callback)) {
 			throw new DispatcherResolverException(
@@ -112,10 +114,42 @@ trait RouterTrait
 		return $handler;
 	}
 
-	private function resolveMethod(
-		$class,
-		string $method,
-		array $parameters
-	): ResponseInterface {
+	/**
+	 * Resolve given [class, method] with given
+	 * set of parameters.
+	 *
+	 * @param array $classPair A pair of class and name.
+	 * @param array $parameters Class method parameters.
+	 * @return ResponseInterface
+	 */
+	public function resolveMethod(array $classPair, array $parameters): ResponseInterface
+	{
+		if (count($classPair) !== 2) {
+			throw new DispatcherResolverException(
+				"Array must be consists of class or object instance and " .
+				"method name."
+			);
+		}
+
+		if (is_object($classPair[0])) {
+			return call_user_func_array($classPair, $parameters);
+		}
+
+		$refl = new ReflectionClass($classPair[0]);
+
+		if (!$refl->hasMethod($classPair[1])) {
+			throw new DispatcherResolverException(
+				sprintf(
+					"Class (%s) doesn't have a method named (%s)",
+					$refl->getName(),
+					$classPair[1]
+				)
+			);
+		}
+
+		return call_user_func_array(
+			[$refl->newInstanceWithoutConstructor(), $classPair[1]],
+			$parameters
+		);
 	}
 }
