@@ -150,7 +150,9 @@ class Router implements RouterInterface
 				if ($value['route'] === $route && in_array($method, $value['methods'], true)) {
 					return [
 						'status' => $value['status'],
-						'response' => $this->resolveCallback($value['handler'], $value['parameters'])
+						'response' => !is_array($value['handler'])
+							? $this->resolveCallback($value['handler'], $value['parameters'])
+							: $this->resolveMethod($value['handler'], $value['parameters'])
 					];
 				}
 			}
@@ -180,7 +182,9 @@ class Router implements RouterInterface
 
 		return [
 			'status' => $ret['status'],
-			'response' => $this->resolveCallback($ret['handler'], $ret['parameters'])
+			'response' => !is_array($ret['handler'])
+				? $this->resolveCallback($ret['handler'], $ret['parameters'])
+				: $this->resolveMethod($ret['handler'], $ret['parameters'])
 		];
 	}
 
@@ -281,7 +285,7 @@ class Router implements RouterInterface
 		if (!$this->hasCallback($id)) {
 			throw new DispatcherResolverException(
 				sprintf(
-					"Callback with id '%' not exist.",
+					"Callback with id '%s' not exist.",
 					$id
 				)
 			);
