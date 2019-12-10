@@ -146,12 +146,12 @@ class Router implements RouterInterface
 		if (true === $wantCache && file_exists($cacheFile) && filesize($cacheFile) !== 0) {
 			$routes = require $cacheFile;
 
-			foreach ($routes as $key => $value) {
+			foreach ($routes as $value) {
 				if ($value['route'] === $route && in_array($method, $value['methods'], true)) {
 					return [
 						'status' => $value['status'],
 						'response' => !is_array($value['handler'])
-							? $this->resolveCallback($value['handler'], $value['parameters'])
+							? $this->getCallback($value['handler'])($value['parameters'])
 							: $this->resolveMethod($value['handler'], $value['parameters'])
 					];
 				}
