@@ -161,7 +161,10 @@ class Router implements RouterInterface
 
 		$this->dispatcher->setAggregator($this->routeAggregator);
 
-		$ret = $this->dispatcher->dispatch($method, $route);
+		$ret = $this->dispatcher->dispatch(
+			$request->getMethod(),
+			$request->getUri()->getPath()
+		);
 
 		if ($ret['status'] === Dispatcher::NOT_FOUND ||
 			$ret['status'] === Dispatcher::METHOD_NOT_ALLOWED) {
