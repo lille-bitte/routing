@@ -19,8 +19,8 @@ class Route
 
 	public function __construct($path = null, array $data = [])
 	{
-		$this->addRoute(isset($data['path']) ? $data['path'] : $path);
-		$this->addMethod(
+		$this->setRoute(isset($data['path']) ? $data['path'] : $path);
+		$this->setMethod(
 			isset($data['method'])
 				? ($data['method'] instanceof Method
 					? $data['method']->getMethods()
