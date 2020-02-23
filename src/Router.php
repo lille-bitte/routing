@@ -306,4 +306,14 @@ class Router implements RouterInterface
 
 		return $this->callbacks[$id];
 	}
+
+	/**
+	 * Reset route group.
+	 *
+	 * @return void
+	 */
+	public function resetGroup()
+	{
+		$this->routeAggregator->resetGroup();
+	}
 }
