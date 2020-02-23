@@ -149,12 +149,14 @@ class Router implements RouterInterface
 
 			foreach ($routes as $value) {
 				if ($value['route'] === $route && in_array($method, $value['methods'], true)) {
-					return [
+					$response = [
 						'status' => $value['status'],
 						'response' => !is_array($value['handler'])
 							? $this->getCallback($value['handler'])($value['parameters'])
 							: $this->resolveMethod($value['handler'], $value['parameters'])
 					];
+
+					return new ResponseAccessor($response);
 				}
 			}
 		}
@@ -168,7 +170,12 @@ class Router implements RouterInterface
 
 		if ($ret['status'] === Dispatcher::NOT_FOUND ||
 			$ret['status'] === Dispatcher::METHOD_NOT_ALLOWED) {
-			return $ret;
+			$response = [
+				'status' => $ret['status'],
+				'response' => null
+			];
+
+			return new ResponseAccessor($response);
 		}
 
 		if ($wantCache) {
