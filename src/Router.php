@@ -4,6 +4,7 @@ namespace LilleBitte\Routing;
 
 use LilleBitte\Routing\Exception\DispatcherResolverException;
 use LilleBitte\Routing\Exception\RouterException;
+use LilleBitte\Routing\Response\ResponseAccessor;
 use Psr\Http\Message\RequestInterface;
 
 use function filesize;
