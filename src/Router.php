@@ -137,7 +137,7 @@ class Router implements RouterInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function dispatch(string $method, string $route)
+	public function dispatch(RequestInterface $request)
 	{
 		$this->assertWantCache();
 
