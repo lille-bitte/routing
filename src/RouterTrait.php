@@ -2,6 +2,7 @@
 
 namespace LilleBitte\Routing;
 
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Container\ContainerInterface;
 use LilleBitte\Routing\Exception\DispatcherResolverException;
