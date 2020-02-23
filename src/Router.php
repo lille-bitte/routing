@@ -152,8 +152,8 @@ class Router implements RouterInterface
 					$response = [
 						'status' => $value['status'],
 						'response' => !is_array($value['handler'])
-							? $this->getCallback($value['handler'])($value['parameters'])
-							: $this->resolveMethod($value['handler'], $value['parameters'])
+							? $this->getCallback($request, $value['handler'])($value['parameters'])
+							: $this->resolveMethod($request, $value['handler'], $value['parameters'])
 					];
 
 					return new ResponseAccessor($response);
@@ -194,8 +194,8 @@ class Router implements RouterInterface
 		$response = [
 			'status' => $ret['status'],
 			'response' => !is_array($ret['handler'])
-				? $this->resolveCallback($ret['handler'], $ret['parameters'])
-				: $this->resolveMethod($ret['handler'], $ret['parameters'])
+				? $this->resolveCallback($request, $ret['handler'], $ret['parameters'])
+				: $this->resolveMethod($request, $ret['handler'], $ret['parameters'])
 		];
 
 		return new ResponseAccessor($response);
