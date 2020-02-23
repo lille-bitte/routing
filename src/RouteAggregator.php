@@ -98,4 +98,14 @@ class RouteAggregator
 	{
 		return $this->group;
 	}
+
+	/**
+	 * Reset route group.
+	 *
+	 * @return void
+	 */
+	public function resetGroup()
+	{
+		$this->group = '';
+	}
 }
