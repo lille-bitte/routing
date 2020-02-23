@@ -78,7 +78,10 @@ trait RouterTrait
 			);
 		}
 
-		return call_user_func_array($callback, array_values($parameters));
+		return call_user_func_array(
+			$callback,
+			array_merge([$request], array_values($parameters))
+		);
 	}
 
 	/**
