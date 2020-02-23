@@ -71,9 +71,14 @@ class Dispatcher
 			return ['status' => self::NOT_FOUND];
 		}
 
-		$current = array_search($method, $allowedMethods, true);
+		foreach ($allowedMethods as $key => $value) {
+			if (false !== array_search($method, $value, true)) {
+				$current = $key;
+				break;
+			}
+		}
 
-		if (false === $current) {
+		if (!isset($current)) {
 			return [
 				'status' => self::METHOD_NOT_ALLOWED,
 				'allowed-methods' => $allowedMethods
