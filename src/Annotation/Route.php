@@ -53,10 +53,10 @@ class Route
 	/**
 	 * Set HTTP method.
 	 *
-	 * @param string $method HTTP method.
+	 * @param array $method HTTP method.
 	 * @return void
 	 */
-	public function setMethod(string $method)
+	public function setMethod(array $method)
 	{
 		$this->method = $method;
 	}
