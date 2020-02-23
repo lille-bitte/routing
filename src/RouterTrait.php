@@ -129,7 +129,10 @@ trait RouterTrait
 	 * @param array $parameters Class method parameters.
 	 * @return ResponseInterface
 	 */
-	public function resolveMethod(array $classPair, array $parameters): ResponseInterface
+	public function resolveMethod(
+		RequestInterface $request,
+		array $classPair,
+		array $parameters): ResponseInterface
 	{
 		if (count($classPair) !== 2) {
 			throw new DispatcherResolverException(
