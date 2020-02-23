@@ -78,9 +78,8 @@ interface RouterInterface
 	 * Dispatch matched route path with given
 	 * HTTP method.
 	 *
-	 * @param string $method HTTP method.
-	 * @param string $route Route path.
+	 * @param RequestInterface $request Request object.
 	 * @return array
 	 */
-	public function dispatch(string $method, string $route);
+	public function dispatch(RequestInterface $request);
 }
