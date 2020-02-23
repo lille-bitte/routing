@@ -181,12 +181,14 @@ class Router implements RouterInterface
 			);
 		}
 
-		return [
+		$response = [
 			'status' => $ret['status'],
 			'response' => !is_array($ret['handler'])
 				? $this->resolveCallback($ret['handler'], $ret['parameters'])
 				: $this->resolveMethod($ret['handler'], $ret['parameters'])
 		];
+
+		return new ResponseAccessor($response);
 	}
 
 	/**
