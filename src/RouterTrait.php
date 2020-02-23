@@ -159,7 +159,7 @@ trait RouterTrait
 
 		return call_user_func_array(
 			[$refl->newInstanceWithoutConstructor(), $classPair[1]],
-			$parameters
+			array_merge([$request], array_values($parameters))
 		);
 	}
 }
