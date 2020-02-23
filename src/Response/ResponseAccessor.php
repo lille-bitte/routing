@@ -47,23 +47,6 @@ class ResponseAccessor implements ResponseAccessorInterface
 	 */
 	private function setDispatchedResponse(array $response)
 	{
-		$this->assertKeyExistence($response);
 		$this->response = $response;
-	}
-
-	/**
-	 * Assert dispatched response.
-	 *
-	 * @param array $response Dispatched response.
-	 * @return void
-	 */
-	private function assertKeyExistence(array $response)
-	{
-		if (!isset($response['status']) || !isset($response['response'])) {
-			throw new DispatchedResponseException(
-				"Both 'status' and 'response' must be exist in " .
-				"dispatched response array."
-			);
-		}
 	}
 }
