@@ -97,14 +97,14 @@ trait DispatcherTrait
 
 			if ($route === $tmp) {
 				$pos[] = $key;
-				$allowedMethods = array_merge($allowedMethods, $value['method']);
+				$allowedMethods = array_merge($allowedMethods, [$value['method']]);
 				$routeParams[] = [];
 			}
 
 			if (count($value['placeholder']) === $this->matchByPosition($res[0], $value['route']) &&
 		        $this->validateRouteParameters($res, $value['placeholder'])) {
 				$pos[] = $key;
-				$allowedMethods = array_merge($allowedMethods, $value['method']);
+				$allowedMethods = array_merge($allowedMethods, [$value['method']]);
 				$routeParams[] = array_combine(
 					$this->collectMetadataValue($value, 'placeholder'),
 					array_slice($res, 1)
