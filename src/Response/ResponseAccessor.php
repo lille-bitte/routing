@@ -24,7 +24,9 @@ class ResponseAccessor implements ResponseAccessorInterface
 	 */
 	public function getStatus()
 	{
-		return $this->response['status'];
+		return isset($this->response['status'])
+			? $this->response['status'];
+			: null;
 	}
 
 	/**
