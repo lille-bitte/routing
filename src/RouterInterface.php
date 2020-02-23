@@ -2,6 +2,8 @@
 
 namespace LilleBitte\Routing;
 
+use Psr\Http\Message\RequestInterface;
+
 /**
  * @author Paulus Gandung Prakosa <rvn.plvhx@gmail.com>
  */
