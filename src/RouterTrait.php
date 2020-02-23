@@ -28,7 +28,10 @@ trait RouterTrait
 	 * @param array $parameters Callback parameters.
 	 * @return ResponseInterface
 	 */
-	public function resolveCallback($callback, array $parameters): ResponseInterface
+	public function resolveCallback(
+		RequestInterface $request,
+		$callback,
+		array $parameters): ResponseInterface
 	{
 		if (!is_callable($callback) && !$this->hasCallback($callback)) {
 			throw new DispatcherResolverException(
