@@ -1,3 +1,6 @@
-vendor
+.idea/
+tools/
+vendor/
 test.php
 composer.lock
+phive.xml
