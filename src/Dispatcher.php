@@ -14,8 +14,19 @@ class Dispatcher
      */
     private $routeAggregator;
 
+    /**
+     * @var integer
+     */
     const FOUND = 0;
+
+    /**
+     * @var integer
+     */
     const METHOD_NOT_ALLOWED = 1;
+
+    /**
+     * @var integer
+     */
     const NOT_FOUND = 2;
 
     public function __construct(RouteAggregator $routeAggregator = null)
