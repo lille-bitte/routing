@@ -7,13 +7,13 @@ namespace LilleBitte\Routing;
  */
 class RouterFactory
 {
-	/**
-	 * Get router instance.
-	 *
-	 * @return RouterInterface
-	 */
-	public static function getRouter()
-	{
-		return new Router(new Dispatcher, new RouteAggregator);
-	}
+    /**
+     * Get router instance.
+     *
+     * @return RouterInterface
+     */
+    public static function getRouter()
+    {
+        return new Router(new Dispatcher, new RouteAggregator);
+    }
 }
