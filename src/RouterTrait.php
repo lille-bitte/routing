@@ -142,7 +142,10 @@ trait RouterTrait
         }
 
         if (is_object($classPair[0])) {
-            return call_user_func_array($classPair, $parameters);
+            return call_user_func_array(
+                $classPair,
+                array_merge([$request], array_values($parameters))
+            );
         }
 
         $refl = new ReflectionClass($classPair[0]);
